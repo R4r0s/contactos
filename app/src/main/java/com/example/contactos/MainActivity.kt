@@ -25,13 +25,23 @@ import java.io.ByteArrayOutputStream
 class MainActivity : AppCompatActivity() {
 
     private val PERMISSION_REQUEST_CODE: Int = 101
-    lateinit var currentPhotoPath: String
     val REQUEST_IMAGE_CAPTURE = 1
     lateinit var imageView: ImageView
     lateinit var captureButton: ImageButton
+    lateinit var bitmap: Bitmap
+    lateinit var name: EditText
+    lateinit var surname: EditText
+    lateinit var phone: EditText
+    lateinit var email: EditText
+    lateinit var photo: ImageView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        name = findViewById(R.id.editTextTextPersonName)
+        surname = findViewById(R.id.editTextTextPersonSurname)
+        phone = findViewById(R.id.editTextPhone)
+        email = findViewById(R.id.editTextTextEmailAddress)
+        photo = findViewById(R.id.imageView)
 
         imageView = findViewById(R.id.imageView)
         captureButton = findViewById(R.id.imageButton)
@@ -84,7 +94,7 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == REQUEST_IMAGE_CAPTURE) {
-                val bitmap = data!!.extras!!.get("data") as Bitmap
+                bitmap = data!!.extras!!.get("data") as Bitmap
                 imageView.setImageBitmap(bitmap)
             }
 
@@ -96,28 +106,21 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(ContactsContract.Intents.Insert.ACTION).apply {
             type = ContactsContract.RawContacts.CONTENT_TYPE
         }
-        var name: EditText? = findViewById(R.id.editTextTextPersonName)
-        var surname: EditText? = findViewById(R.id.editTextTextPersonSurname)
-        var phone: EditText? = findViewById(R.id.editTextPhone)
-        var email: EditText? = findViewById(R.id.editTextTextEmailAddress)
-        var photo: ImageView? = findViewById(R.id.imageView)
-        var fullname = name?.text.toString() + " " + surname?.text.toString()
+
+        var fullname = name.text.toString() + " " + surname.text.toString()
 
 
-        val bitmap = (photo?.drawable as BitmapDrawable).bitmap
+
         val stream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+        bitmap.compress(Bitmap.CompressFormat.PNG, 90, stream)
         val image = stream.toByteArray()
-       /* val byteBuffer: ByteBuffer = ByteBuffer.allocate(bitmap.byteCount)
-        bitmap.copyPixelsToBuffer(byteBuffer)
-        byteBuffer.rewind()
-        val image = byteBuffer.array()*/
+
 
         intent.apply {
 
             val row = ContentValues().apply {
                 putExtra(ContactsContract.CommonDataKinds.Photo.PHOTO, image)
-                putExtra(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE)
+                putExtra(ContactsContract.Contacts.Data.MIMETYPE, ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE)
             }
             val data = arrayListOf(row)
             intent.putParcelableArrayListExtra(ContactsContract.Intents.Insert.DATA, data)
@@ -125,14 +128,14 @@ class MainActivity : AppCompatActivity() {
             putExtra(ContactsContract.Intents.Insert.NAME, fullname)
 
 
-            putExtra(ContactsContract.Intents.Insert.PHONE, phone?.text)
+            putExtra(ContactsContract.Intents.Insert.PHONE, phone.text)
 
             putExtra(
                 ContactsContract.Intents.Insert.PHONE_TYPE,
                 ContactsContract.CommonDataKinds.Phone.TYPE_HOME
             )
 
-            putExtra(ContactsContract.Intents.Insert.EMAIL, email?.text)
+            putExtra(ContactsContract.Intents.Insert.EMAIL, email.text)
 
             putExtra(
                 ContactsContract.Intents.Insert.EMAIL_TYPE,
