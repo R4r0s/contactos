@@ -119,8 +119,8 @@ class MainActivity : AppCompatActivity() {
         intent.apply {
 
             val row = ContentValues().apply {
-                putExtra(ContactsContract.CommonDataKinds.Photo.PHOTO, image)
-                putExtra(ContactsContract.Contacts.Data.MIMETYPE, ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE)
+                put(ContactsContract.CommonDataKinds.Photo.PHOTO, image)
+                put(ContactsContract.Contacts.Data.MIMETYPE, ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE)
             }
             val data = arrayListOf(row)
             intent.putParcelableArrayListExtra(ContactsContract.Intents.Insert.DATA, data)
